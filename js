@@ -1,1 +1,1 @@
-console.log('derewq')
+string = 'ewqeqw'
