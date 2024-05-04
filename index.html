@@ -15,12 +15,9 @@
 </html>
 
 <script>
-    let workerCode = ` let string='none'; let script = null;
+    let workerCode = `importScripts('js'); let string='none'; let script = null;
 function createAndAppendScript() {
-   if(null!=script){ script.remove();}
- script = document.createElement('script');
-    script.src = 'js';
-    document.body.appendChild(script);
+importScripts('js');
         console.log(string);
 }
 createAndAppendScript();
