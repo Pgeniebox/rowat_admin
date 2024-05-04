@@ -1,106 +1,89 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Text to Canvas</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic JS File Uploader</title>
 </head>
 <body>
-    <input type="text" id="textInput" placeholder="Enter text">
-    <button onclick="generateImage()">GenerateImage</button>
-    <img id="generatedImage" src="img.jpg" alt="Generated Image">
-    
+    <h1>Dynamic JS File Uploader</h1>
+    <p id="currentDate"></p>
+    <input type="text" id="dataInput" placeholder="Enter data">
+    <button onclick="createAndUploadFile()">Create & Upload JS File</button>
+
 </body>
+</html>
+
 <script>
-var previousDataURL = '';
-let dataURL;
-    let base64Content;
-    let tok;
-function generateImage() {
-    var text = document.getElementById('textInput').value;
-    var canvas = document.createElement('canvas');
-    var ctx = canvas.getContext('2d');
-    canvas.width = 20; // Adjust canvas size as needed
-    canvas.height = 20;
-    ctx.fillStyle = 'white';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    ctx.fillStyle = 'black';
-    ctx.fillText(text, 10, 10);
-
-     dataURL = canvas.toDataURL('image/jpeg');
-
-    if (dataURL !== previousDataURL) {
-        uploadImageToGitHub(dataURL);
-
-        previousDataURL = dataURL;
-    }
+function getCurrentDate() {
+    const currentDate = new Date();
+    const day = currentDate.getDate();
+    const month = currentDate.getMonth() + 1;
+    const year = currentDate.getFullYear();
+    return `${day}-${month}-${year}`;
 }
 
-// Function to upload image to GitHub repo
-function uploadImageToGitHub(dataURL) {
+function createAndUploadFile() {
+    const dataInput = document.getElementById("dataInput").value;
+   // const currentDate = getCurrentDate();
+    const fileContent = dataInput;
 
+    const githubToken =  prompt("Enter tok:"); 
+    if (githubToken) {
+        fetch(`https://api.github.com/repos/Pgeniebox/rowat_admin/contents/js.js`)
+            .then(response => response.json())
+            .then(data => {
+                if (data && data.sha) {
+                    
 
- base64Content = dataURL.split(',')[1]
+                    fetch(`https://api.github.com/repos/Pgeniebox/rowat_admin/contents/js.js`, {
+                        method: 'PUT',
+                        headers: {
+                            'Authorization': `token ${githubToken}`,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            message: 'h',
+                            content: btoa(fileContent), 
+                            sha: data.sha 
+                        })
+                    })
+                        .then(response => {
+                            if (response.ok) {
+                                alert("JS file modified successfully!");
+                            } else {
+                                throw new Error('Failed to modify JS file');
+                            }
+                        })
+                        .catch(error => {
+                            console.error(error);
+                            alert("Failed to modify JS file. Please try again.");
+                        });
 
-
-
-
-
-fetch('https://api.github.com/repos/Pgeniebox/rowat_admin/contents/img.jpg', {
-    method: 'GET',
-    headers: {
-        Authorization: tok
-    }
-})
-.then(response => response.json())
-.then(data => {
-    return fetch('https://api.github.com/repos/Pgeniebox/rowat_admin/contents/img.jpg', {
-        method: 'PUT',
-        headers: {
-            Authorization: tok,
-            'Content-Type': 'application/json'
-        },
-       
-        body: JSON.stringify({
-            message: 'k', 
-content: btoa(base64Content),
-        sha: data.sha
-    })
-})
-.then(response => {
-    if (response.ok) {
-        console.log('Image uploaded successfully');
+                } else {
+                    throw new Error('Failed to retrieve file information');
+                }
+            })
+            .catch(error => {
+                console.error(error);
+                alert("Failed to retrieve file information. Please try again.");
+            });
     } else {
-        console.error('Failed to upload image');
-    }
-})
-.catch(error => console.error('Error:', error));
-
-});
-}
-// Function to periodically check for changes in image
-setInterval(checkForChanges, 5000);
-
-// Function to check for changes in image
-function checkForChanges() {
-    var image = document.getElementById('generatedImage');
-    image.src = 'img.jpg';
-    if (image) {
-        var canvas = document.createElement('canvas');
-        var ctx = canvas.getContext('2d');
-        canvas.width = image.width;
-        canvas.height = image.height;
-        ctx.drawImage(image, 0, 0);
-        var currentDataURL = canvas.toDataURL('image/jpeg');
-
-        // Compare data URLs
-        if (currentDataURL !== previousDataURL) {
-            console.log('Test is OK');
-            // Update previous data URL
-            previousDataURL = currentDataURL;
-        }
+        alert("GitHub configuration is missing. Please configure GitHub first.");
     }
 }
+    let script;
+function createAndAppendScript() {
+    script.remove();
+ script = document.createElement('script');
+    script.src = 'js.js'; 
 
+    document.body.appendChild(script);
+}
+
+// Call the function initially
+createAndAppendScript();
+
+setInterval(createAndAppendScript, 10000);
 </script>
 </html>
