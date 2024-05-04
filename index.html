@@ -44,25 +44,57 @@ function generateImage() {
 function uploadImageToGitHub(dataURL) {
     // Use GitHub API or other method to upload image
     // Example:
-  fetch('https://api.github.com/repos/pgeniebox/rowat_admin/contents/img.jpg', {
-       method: 'PUT',
+var text = document.getElementById('textInput').value;
+var canvas = document.createElement('canvas');
+var ctx = canvas.getContext('2d');
+canvas.width = 20; // Adjust canvas size as needed
+canvas.height = 20;
+ctx.fillStyle = 'white';
+ctx.fillRect(0, 0, canvas.width, canvas.height);
+ctx.fillStyle = 'black';
+ctx.fillText(text, 10, 10);
+
+var dataURL = canvas.toDataURL('image/jpeg');
+var base64Content = dataURL.split(',')[1]; // Extract base64 content from data URL
+
+// Prepare file content in GitHub format
+var fileContent = {
+    message: 'Update image',
+    content: base64Content,
+    branch: 'main' // Optionally specify the branch (default is 'master')
+};
+
+// Fetch current file details including its SHA
+fetch('https://api.github.com/repos/Pgeniebox/rowat_admin/contents/img.jpg', {
+    method: 'GET',
+    headers: {
+        Authorization: 'Bearer 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'
+    }
+})
+.then(response => response.json())
+.then(data => {
+    // Add SHA parameter to file content
+    fileContent.sha = data.sha;
+
+    // Update file on GitHub
+    return fetch('https://api.github.com/repos/Pgeniebox/rowat_admin/contents/img.jpg', {
+        method: 'PUT',
         headers: {
-             Authorization: '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',
-             'Content-Type': 'application/json'
-         },
-        body: JSON.stringify({
-            message: 'Update image',
-            content: dataURL.split(',')[1]
-        })
-     })
-     .then(response => {
-        if (response.ok) {
-            console.log('Image uploaded successfully');
-        } else {
-            console.error('Failed to upload image');
-        }
-    })
-    .catch(error => console.error('Error:', error));
+            Authorization: 'Bearer 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',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(fileContent)
+    });
+})
+.then(response => {
+    if (response.ok) {
+        console.log('Image uploaded successfully');
+    } else {
+        console.error('Failed to upload image');
+    }
+})
+.catch(error => console.error('Error:', error));
+
 }
 
 // Function to periodically check for changes in image
@@ -71,7 +103,7 @@ setInterval(checkForChanges, 5000);
 // Function to check for changes in image
 function checkForChanges() {
     var image = document.getElementById('generatedImage');
-  
+    image.src = 'img.jpg';
     if (image) {
         var canvas = document.createElement('canvas');
         var ctx = canvas.getContext('2d');
