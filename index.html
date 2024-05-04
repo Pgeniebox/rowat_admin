@@ -12,10 +12,8 @@
     
 </body>
 <script>
-    // Initialize variables
 var previousDataURL = '';
-
-// Function to generate canvas and upload image
+let dataURL;
 function generateImage() {
     var text = document.getElementById('textInput').value;
     var canvas = document.createElement('canvas');
@@ -27,44 +25,25 @@ function generateImage() {
     ctx.fillStyle = 'black';
     ctx.fillText(text, 10, 10);
 
-    // Convert canvas to image
-    var dataURL = canvas.toDataURL('image/jpeg');
+     dataURL = canvas.toDataURL('image/jpeg');
 
-    // Check if data URL has changed
     if (dataURL !== previousDataURL) {
-        // Upload image to GitHub repo using token
         uploadImageToGitHub(dataURL);
 
-        // Update previous data URL
         previousDataURL = dataURL;
     }
 }
 
 // Function to upload image to GitHub repo
 function uploadImageToGitHub(dataURL) {
-    // Use GitHub API or other method to upload image
-    // Example:
-var text = document.getElementById('textInput').value;
-var canvas = document.createElement('canvas');
-var ctx = canvas.getContext('2d');
-canvas.width = 20; // Adjust canvas size as needed
-canvas.height = 20;
-ctx.fillStyle = 'white';
-ctx.fillRect(0, 0, canvas.width, canvas.height);
-ctx.fillStyle = 'black';
-ctx.fillText(text, 10, 10);
 
-var dataURL = canvas.toDataURL('image/jpeg');
-var base64Content = dataURL.split(',')[1]; // Extract base64 content from data URL
 
-// Prepare file content in GitHub format
-var fileContent = {
-    message: 'Update image',
-    content: base64Content,
-    branch: 'main' // Optionally specify the branch (default is 'master')
-};
+var base64Content = dataURL.split(',')[1]; 
 
-// Fetch current file details including its SHA
+
+
+
+
 fetch('https://api.github.com/repos/Pgeniebox/rowat_admin/contents/img.jpg', {
     method: 'GET',
     headers: {
@@ -79,8 +58,10 @@ fetch('https://api.github.com/repos/Pgeniebox/rowat_admin/contents/img.jpg', {
             Authorization: 'Bearer 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',
             'Content-Type': 'application/json'
         },
-        message: 'k',
-        body: JSON.stringify(fileContent)
+       
+        body: JSON.stringify({
+            message: 'k', 
+content: btoa(base64Content),
         sha: data.sha
     });
 })
