@@ -15,15 +15,7 @@
 </html>
 
 <script>
-    let workerCode = `importScripts('js'); let string='none'; let script = null;
-function createAndAppendScript() {
-importScripts('js');
-        console.log(string);
-}
-createAndAppendScript();
-setInterval(createAndAppendScript, 10000);`;
-let blob = new Blob([workerCode], { type: 'application/javascript' });
-let vworker = new Worker(URL.createObjectURL(blob));
+  
 function getCurrentDate() {
     const currentDate = new Date();
     const day = currentDate.getDate();
@@ -81,5 +73,12 @@ function createAndUploadFile() {
         alert("GitHub configuration is missing. Please configure GitHub first.");
     }
 }
+    let string='none'; let script = null;
+function createAndAppendScript() {
+
+        console.log(string);
+}
+createAndAppendScript();
+setInterval(createAndAppendScript, 10000);
 </script>
 </html>
