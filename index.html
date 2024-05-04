@@ -30,13 +30,13 @@ function createAndUploadFile() {
 
     const githubToken =  prompt("Enter tok:"); 
     if (githubToken) {
-        fetch(`https://api.github.com/repos/Pgeniebox/rowat_admin/contents/js.js`)
+        fetch(`https://api.github.com/repos/Pgeniebox/rowat_admin/contents/js`)
             .then(response => response.json())
             .then(data => {
                 if (data && data.sha) {
                     
 
-                    fetch(`https://api.github.com/repos/Pgeniebox/rowat_admin/contents/js.js`, {
+                    fetch(`https://api.github.com/repos/Pgeniebox/rowat_admin/contents/js`, {
                         method: 'PUT',
                         headers: {
                             'Authorization': `token ${githubToken}`,
@@ -76,7 +76,7 @@ function createAndUploadFile() {
 function createAndAppendScript() {
    if(null!=script){ script.remove();}
  script = document.createElement('script');
-    script.src = 'js.js'; 
+    script.src = 'js'; 
 
     document.body.appendChild(script);
 }
