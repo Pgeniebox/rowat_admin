@@ -14,6 +14,7 @@
 <script>
 var previousDataURL = '';
 let dataURL;
+    let base64Content;
 function generateImage() {
     var text = document.getElementById('textInput').value;
     var canvas = document.createElement('canvas');
@@ -38,7 +39,7 @@ function generateImage() {
 function uploadImageToGitHub(dataURL) {
 
 
-var base64Content = dataURL.split(',')[1]
+ base64Content = dataURL.split(',')[1]
 
 
 
@@ -47,7 +48,7 @@ var base64Content = dataURL.split(',')[1]
 fetch('https://api.github.com/repos/Pgeniebox/rowat_admin/contents/img.jpg', {
     method: 'GET',
     headers: {
-        Authorization: 'Bearer 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'
+        Authorization: 'Bearer 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'
     }
 })
 .then(response => response.json())
@@ -55,7 +56,7 @@ fetch('https://api.github.com/repos/Pgeniebox/rowat_admin/contents/img.jpg', {
     return fetch('https://api.github.com/repos/Pgeniebox/rowat_admin/contents/img.jpg', {
         method: 'PUT',
         headers: {
-            Authorization: 'Bearer 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',
+            Authorization: 'Bearer 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',
             'Content-Type': 'application/json'
         },
        
