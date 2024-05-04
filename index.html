@@ -73,17 +73,15 @@ fetch('https://api.github.com/repos/Pgeniebox/rowat_admin/contents/img.jpg', {
 })
 .then(response => response.json())
 .then(data => {
-    // Add SHA parameter to file content
-    fileContent.sha = data.sha;
-
-    // Update file on GitHub
     return fetch('https://api.github.com/repos/Pgeniebox/rowat_admin/contents/img.jpg', {
         method: 'PUT',
         headers: {
             Authorization: 'Bearer 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',
             'Content-Type': 'application/json'
         },
+        message: 'k',
         body: JSON.stringify(fileContent)
+        sha: data.sha
     });
 })
 .then(response => {
