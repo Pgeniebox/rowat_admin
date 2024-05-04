@@ -8,7 +8,7 @@
 <body>
     <input type="text" id="textInput" placeholder="Enter text">
     <button onclick="generateImage()">Generate Image</button>
-    <img id="generatedImage" src="/img.jpg" alt="Generated Image">
+    <img id="generatedImage" src="img.jpg" alt="Generated Image">
     
 </body>
 <script>
@@ -71,7 +71,7 @@ setInterval(checkForChanges, 5000);
 // Function to check for changes in image
 function checkForChanges() {
     var image = document.getElementById('generatedImage');
-    image.src = '/img.jpg';
+  
     if (image) {
         var canvas = document.createElement('canvas');
         var ctx = canvas.getContext('2d');
