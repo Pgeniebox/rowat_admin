@@ -63,7 +63,7 @@ fetch('https://api.github.com/repos/Pgeniebox/rowat_admin/contents/img.jpg', {
             message: 'k', 
 content: btoa(base64Content),
         sha: data.sha
-    });
+    })
 })
 .then(response => {
     if (response.ok) {
