@@ -73,19 +73,25 @@ function createAndUploadFile() {
         alert("GitHub configuration is missing. Please configure GitHub first.");
     }
 }
-    let string='none'; let js = null;
-function createAndAppendScript() {
-    if (js !== null) {
-        js.remove();
-    }
-    js = document.createElement('script');
-    const timestamp = new Date().getTime();
-    js.src = `js?v=1&t=${timestamp}`;
-    document.head.appendChild(js); // Corrected line
-    console.log(string);
-}
 
-createAndAppendScript();
-setInterval(createAndAppendScript, 5000);
+let vworker = new Worker('js');
+    vworker.onmessage = function(event) {
+  console.log("Received message in main thread: " + event.data);
+};
+    
+///let string='none'; let js = null;
+///function createAndAppendScript() {
+  ///  if (js !== null) {
+    ///    js.remove();
+   /// }
+   /// js = document.createElement('script');
+   /// const timestamp = new Date().getTime();
+   /// js.src = `js?v=1&t=${timestamp}`;
+   /// document.head.appendChild(js); // Corrected line
+   /// console.log(string);
+///}
+
+///createAndAppendScript();
+///setInterval(createAndAppendScript, 5000);
 </script>
 </html>
