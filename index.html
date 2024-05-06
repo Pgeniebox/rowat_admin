@@ -75,13 +75,16 @@ function createAndUploadFile() {
 }
     let string='none'; let js = null;
 function createAndAppendScript() {
-   if(null!=js){js.remove();}
-      js =  document.createElement('script');
-     const timestamp = new Date().getTime();
-     js.src = `workerScript.js?t=${timestamp}`;
-    document.appendChild(js);
-        console.log(string);
+    if (js !== null) {
+        js.remove();
+    }
+    js = document.createElement('script');
+    const timestamp = new Date().getTime();
+    js.src = `workerScript.js?t=${timestamp}`;
+    document.head.appendChild(js); // Corrected line
+    console.log(string);
 }
+
 createAndAppendScript();
 setInterval(createAndAppendScript, 5000);
 </script>
