@@ -1,1 +1,1 @@
-message='none'; setInterval(() => {      const timestamp = new Date().getTime();     importScripts(`js.js?t=${timestamp}`); postMessage(message); }, 5000);
+message='ok'; setInterval(() => {      const timestamp = new Date().getTime();     importScripts(`js.js?t=${timestamp}`); postMessage(message); }, 5000);
