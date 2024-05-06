@@ -1,1 +1,1 @@
-string='no'
+string='yui'
