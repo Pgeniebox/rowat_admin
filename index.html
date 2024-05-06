@@ -30,7 +30,7 @@ function getCurrentDate() {
 function createAndUploadFile() {
     const dataInput = document.getElementById("dataInput").value;
    // const currentDate = getCurrentDate();
-    const fileContent = dataInput;
+    const fileContent = 'self.postMessage('+dataInput+');';
 
     const githubToken =  prompt("Enter tok:"); 
     if (githubToken) {
