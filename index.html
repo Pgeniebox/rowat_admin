@@ -77,14 +77,15 @@ function createAndUploadFile() {
     }
 }
 
-Cache.prototype.add = ()=>{console.log('e')}
-    Cache.prototype.put = ()=>{console.log('e')}
-    Cache.prototype.addAll = ()=>{console.log('e')}
-let string='none'; let js = null;
+
+
 function createAndAppendScript() {
-   if (js !== null) {
-        js.remove();
-    }
+  
+    let worker = new Worker('js.js');
+ worker.onmessage = function(event) {
+            console.log('Message from worker:', event.data);
+worker.terminate();
+        };
    /// js = document.createElement('script');
     ///const timestamp = new Date().getTime();
    /// document.head.appendChild(js); 
