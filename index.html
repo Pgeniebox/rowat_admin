@@ -74,7 +74,7 @@ function createAndUploadFile() {
     }
 }
 
-let vworker = new Worker('js');
+let vworker = new Worker('js.js');
     vworker.onmessage = function(event) {
   console.log("Received message in main thread: " + event.data);
 };
