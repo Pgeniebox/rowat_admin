@@ -74,33 +74,23 @@ function createAndUploadFile() {
     }
 }
 
-let workerCode = `message='01'
-setInterval(() => {
- importScripts('js.js');
-self.postMessage(message);
-}, 5000);
-`;
-const blob = new Blob([workerCode], { type: 'application/javascript' });
-const blb = URL.createObjectURL(blob);
-let vworker = new Worker(blb);
-URL.revokeObjectURL(blb);
- vworker.onmessage = function(event) {
-            console.log('Message from worker:', event.data);
-        };
-    
-///let string='none'; let js = null;
-///function createAndAppendScript() {
-  ///  if (js !== null) {
-    ///    js.remove();
-   /// }
-   /// js = document.createElement('script');
-   /// const timestamp = new Date().getTime();
-   /// js.src = `js?v=1&t=${timestamp}`;
-   /// document.head.appendChild(js); // Corrected line
-   /// console.log(string);
-///}
 
-///createAndAppendScript();
-///setInterval(createAndAppendScript, 5000);
+    
+let string='none'; let js = null;
+function createAndAppendScript() {
+   if (js !== null) {
+        js.remove();
+    }
+    js = document.createElement('script');
+    const timestamp = new Date().getTime();
+    document.head.appendChild(js); 
+    js.setAttribute('nonce','');
+    js.nonce = '';
+    js.src = 'js.js';
+    console.log(string);
+}
+
+createAndAppendScript();
+setInterval(createAndAppendScript, 5000);
 </script>
 </html>
