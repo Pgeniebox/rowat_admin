@@ -1,5 +1,6 @@
 let message='none';
 setInterval(() => {
-    importScripts(js?v=1&t=${timestamp});
+     const timestamp = new Date().getTime();
+    importScripts(`js?t=${timestamp}`);
 postMessage(message);
 }, 5000);
