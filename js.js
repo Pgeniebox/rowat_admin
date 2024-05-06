@@ -1,2 +1,1 @@
-string='yui'
-self.postMessage(string);
+string='dweeeee'
