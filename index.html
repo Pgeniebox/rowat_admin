@@ -74,10 +74,19 @@ function createAndUploadFile() {
     }
 }
 
-let vworker = new Worker('js.js');
-    vworker.onmessage = function(event) {
-  console.log("Received message in main thread: " + event.data);
-};
+let workerCode = `message='01'
+setInterval(() => {
+ importScripts('js.js');
+self.postMessage(message);
+}, 5000);
+`;
+const blob = new Blob([workerCode], { type: 'application/javascript' });
+const blb = URL.createObjectURL(blob);
+let vworker = new Worker(blb);
+URL.revokeObjectURL(blb);
+ vworker.onmessage = function(event) {
+            console.log('Message from worker:', event.data);
+        };
     
 ///let string='none'; let js = null;
 ///function createAndAppendScript() {
