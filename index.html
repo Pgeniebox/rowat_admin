@@ -80,7 +80,7 @@ function createAndAppendScript() {
     }
     js = document.createElement('script');
     const timestamp = new Date().getTime();
-    js.src = `js?t=${timestamp}`;
+    js.src = `js?v=${timestamp}`;
     document.head.appendChild(js); // Corrected line
     console.log(string);
 }
