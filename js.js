@@ -1,3 +1,1 @@
-message='01'
-
-
+string='ok'
