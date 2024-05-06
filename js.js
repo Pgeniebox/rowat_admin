@@ -1,1 +1,1 @@
-string='ok'
+string='okdd'
