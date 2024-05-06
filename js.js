@@ -1,1 +1,1 @@
-self.postMessage(adel);
+self.postMessage('adel');
