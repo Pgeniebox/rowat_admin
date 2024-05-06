@@ -1,1 +1,1 @@
-string='dweeeee'
+self.postMessage('Hello from the worker!');
