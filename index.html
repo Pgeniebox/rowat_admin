@@ -85,14 +85,14 @@ function createAndAppendScript() {
    if (js !== null) {
         js.remove();
     }
-    js = document.createElement('script');
+   /// js = document.createElement('script');
     ///const timestamp = new Date().getTime();
    /// document.head.appendChild(js); 
     ///js.setAttribute('nonce','');
    /// js.nonce = '';
     ///js.src = 'js.js';
     var timestamp = new Date().getTime();
-  document.write('<script src="js.js?version=' + timestamp + '"></script>');
+document.write("<script src='js.js'><\/script>");
     console.log(string);
 }
 
