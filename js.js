@@ -1,1 +1,1 @@
-self.postMessage('Hello from the worker!');
+self.postMessage(adel);
