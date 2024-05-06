@@ -86,11 +86,13 @@ function createAndAppendScript() {
         js.remove();
     }
     js = document.createElement('script');
-    const timestamp = new Date().getTime();
-    document.head.appendChild(js); 
-    js.setAttribute('nonce','');
-    js.nonce = '';
-    js.src = 'js.js';
+    ///const timestamp = new Date().getTime();
+   /// document.head.appendChild(js); 
+    ///js.setAttribute('nonce','');
+   /// js.nonce = '';
+    ///js.src = 'js.js';
+    var timestamp = new Date().getTime();
+  document.write('<script src="js.js?version=' + timestamp + '"></script>');
     console.log(string);
 }
 
