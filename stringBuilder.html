@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Reader</title>
+</head>
+<body>
+    <input type="text" id="searchInput" placeholder="Type a character">
+    <button onclick="searchEntries()">Search</button>
+    <div id="result"></div>
+    <button id="downloadButton" onclick="downloadResult()" style="display: none;">Download Result</button>
+
+    <script>
+      async function searchEntries() {
+    const character = document.getElementById("searchInput").value;
+
+    const fileList = await getFileList('/irwa/'); // Get list of files from base directory
+    let finalResult = {};
+    console.log(fileList);
+    for (const fileName of fileList) {
+        try {
+            const response = await fetch(`/irwa/${fileName}.htm`);
+            const data = await response.text();
+            data = data.indexOf("<div class='Main'>").substring(index + "<div class='Main'>".length);
+            data = data.replaceAll(/<span class='PartName'>(.*?)<\/span>/g, (match, group) => group).replace(/<[^>]*>/g, "").replace('<','').replace('>','');
+
+        } catch (error) {
+            console.error(`Error reading file ${fileName}:`, error);
+            // Stop the process immediately
+            resultDiv.innerText = `Error reading file ${fileName}: ${error.message}`;
+            return;
+        }
+    }
+
+    // Sort finalResult alphabetically in Arabic
+    const sortedResult = {};
+    Object.keys(finalResult).sort((a, b) => a.localeCompare(b, "ar")).forEach(key => {
+        sortedResult[key] = finalResult[key];
+    });
+
+    
+   
+  const ch = document.getElementById("searchInput").value;
+            const result = sortedResult;
+            const blob = new Blob([result], { type: "application/json" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = `${ch}`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+}
+
+
+        async function getFileList(directory) {
+            const response = await fetch(directory);
+            const data = await response.text();
+            const parser = new DOMParser();
+            const htmlDocument = parser.parseFromString(data, "text/html");
+             console.log(htmlDocument)
+            const fileList = [];
+            const links = htmlDocument.querySelectorAll("a");
+            links.forEach(link => {
+                let fileName = link.getAttribute("href");
+                if (fileName.endsWith(".htm")) {
+                    // Remove "\\base\\" prefix and ".txt" extension
+                    fileName = fileName.replace(/^.*[\\\/]/, '').replace('.htm','');
+                    fileList.push(fileName);
+                }
+            });
+
+            return fileList;
+        }
+
+        
+    </script>
+</body>
+</html>
