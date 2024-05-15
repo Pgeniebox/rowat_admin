@@ -108,7 +108,7 @@ for (let i = 0; i < crd.length; i++) {
     for (let f = 0; i < ff.length; f++) {
        ///get #text:
         if(ff[f].data){var a = ff[f].nextSibling;while(a.className !=='.footnote'||a.nodeName!=='P'||a.className !=='.title'||!a.hasAttribute('data-type')){
-            a.data?ff[f].data += a.data:a.textContent.length>0?ff[f].data += a.textContent;
+            a.data?ff[f].data += a.data:a.textContent.length>0?ff[f].data += a.textContent:null;
             a.parentElement.removeChild(a);
         }
                  lib0[aut][bk][p][f+1]=  ff[f].data; return;      
@@ -116,7 +116,7 @@ for (let i = 0; i < crd.length; i++) {
         ////get P:
         if(ff[f].nodeName==='P'){
             var a = ff[f].nextSibling;while(a.className !=='.footnote'||a.nodeName!=='P'||a.className !=='.title'||!a.hasAttribute('data-type')){
-            a.data?ff[f].data += a.data:a.textContent.length>0?ff[f].data += a.textContent;
+            a.data?ff[f].data += a.data:a.textContent.length>0?ff[f].data += a.textContent:null;
             a.parentElement.removeChild(a);
         }
                              lib0[aut][bk][p][f+1]=  ff[f].data; return;      
