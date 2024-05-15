@@ -1,0 +1,96 @@
+let lib0 = {};
+const aut = document.querySelector('.footnote').textContent.replace('(','').replace(')','')
+  lib0[aut] = {};
+const bk = document.querySelector('title').textContent
+lib0[aut][bk]  = {};
+const oo = 'المقدمة'
+lib0[aut][bk][oo] = {};
+const crd = document.querySelector('.PageText');
+const crdp = crd.querySelectorAll('.title');
+const crdc = crd.childNodes;
+
+for (let i = 0; i < crdc.length; i++) {
+   var e = crdc[i].querySelector('.title');   
+  
+    if(null!==e){
+       var t = e.textContent;
+        lib0[aut][bk][oo][i] = {};
+       lib0[aut][bk][oo][i][t]=  crdc[i].textContent.replace(t,'');
+    }else{
+        lib0[aut][bk][oo][i] = crdc[i].textContent;
+    }
+    
+}
+
+////////////////////////
+const data = document.querySelectorAll('.PageNumber');
+var p = {};
+p[bk] = {};
+const pg = 'p';
+for (let i = 0; i < data.length - 1; i++) {
+    const e =data[i].textContent;
+    p[bk][e] = {};
+    
+}
+const crd = document.querySelector('.PageText').querySelectorAll('.title')
+
+
+//////////////////////////!!!!!!!!!!!
+const crd = document.querySelectorAll('.PageText');
+for (let f = 1; f < crd.length; f++) {
+    lib0[aut][bk][f]={};
+const crdc = crd[f].childNodes;
+
+for (let i = 0; i < crdc.length; i++) {
+    if(crdc[i].nodeName === '#text'){break;}
+   var e = crdc[i].querySelector('.title');   
+  
+    if(null!==e){
+       var t = e.textContent;
+        lib0[aut][bk][f][i] = {};
+       lib0[aut][bk][f][i][t]=  crdc[i].textContent.replace(t,'');
+    }else{
+        lib0[aut][bk][f][i] = crdc[i].textContent;
+    }
+    
+}
+}
+
+//////////////////////
+
+const crd = document.querySelectorAll('.PageText');
+for (let f = 1; f < crd.length; f++) {
+    
+const crdc = crd[f].childNodes;
+
+for (let i = 0; i < crdc.length; i++) {
+    if(crdc[i].nodeName === '#text'){break;}
+    lib0[aut][bk][f]={};
+   var e = crdc[i].querySelector('.title');   
+  
+    if(null!==e){
+       var t = e.textContent;
+        lib0[aut][bk][f][i] = {};
+       lib0[aut][bk][f][i][t]=  crdc[i].textContent.replace(t,'');
+    }else{
+        lib0[aut][bk][f][i] = crdc[i].textContent;
+    }
+    
+}
+}
+
+///////////
+document.querySelector('.PageText').remove();
+  const rr = document.querySelectorAll('p');
+rr.forEach(y=>{
+    while(y.nextSibling){
+    if(y.nextSibling.nodeName==='P'){return;}
+    const a = y.nextSibling;
+        a.data?y.textContent += a.data:a.textContent.length>0?y.textContent += a.textContent:null;    
+        a.parentElement.removeChild(a);}
+    
+})
+
+/////////////////////
+let tt = document.querySelectorAll('.PageText');
+tt.forEach(t=>{const u = t.querySelector('.PageNumber'); if(u){t.data =u.textContent;const d = t.querySelector('.PageHead');if(d){t.removeChild(d)}}})
