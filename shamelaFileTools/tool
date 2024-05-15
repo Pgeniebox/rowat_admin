@@ -94,3 +94,41 @@ rr.forEach(y=>{
 /////////////////////
 let tt = document.querySelectorAll('.PageText');
 tt.forEach(t=>{const u = t.querySelector('.PageNumber'); if(u){t.data =u.textContent;const d = t.querySelector('.PageHead');if(d){t.removeChild(d)}}})
+
+/////////////////////////////////
+
+const crd = document.querySelector('.PageText');
+const p = 'p';
+const fn = 'fn'
+for (let i = 0; i < crd.length; i++) {
+    lib0[aut][bk][p] = {};
+    const ee = crd[i].data;
+    lib0[aut][bk][p][i] = ee;
+    const ff = crd[i].childNodes;
+    for (let f = 0; i < ff.length; f++) {
+       ///get #text:
+        if(ff[f].data){var a = ff[f].nextSibling;while(a.className !=='.footnote'||a.nodeName!=='P'||a.className !=='.title'||!a.hasAttribute('data-type')){
+            a.data?ff[f].data += a.data:a.textContent.length>0?ff[f].data += a.textContent;
+            a.parentElement.removeChild(a);
+        }
+                 lib0[aut][bk][p][f+1]=  ff[f].data; return;      
+            }
+        ////get P:
+        if(ff[f].nodeName==='P'){
+            var a = ff[f].nextSibling;while(a.className !=='.footnote'||a.nodeName!=='P'||a.className !=='.title'||!a.hasAttribute('data-type')){
+            a.data?ff[f].data += a.data:a.textContent.length>0?ff[f].data += a.textContent;
+            a.parentElement.removeChild(a);
+        }
+                             lib0[aut][bk][p][f+1]=  ff[f].data; return;      
+        }
+        ////get .title:
+      if(ff[f].className==='.title'){lib0[aut][bk][p][f+1]= ff.textContent;return; }  
+        ///get data-type:
+      if(ff[f].hasAttribute('data-type')) {lib0[aut][bk][p][f+1]= ff.textContent;return; } 
+        ///get .footnote:
+        if(ff[f].className==='.footnote'){lib0[aut][bk][p][fn]=fn;}
+    }
+    
+    
+}
+
