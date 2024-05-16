@@ -231,3 +231,7 @@ else if(!lib0[aut][bk][p][i]){
         lib0[aut][bk][p][i-1][0] += ff[f].textContent;}
     }
 }
+
+
+JSON.parse(localStorage.getItem('lib0'));
+localStorage.setItem('lib0',JSON.stringify(lib0));
