@@ -235,3 +235,125 @@ else if(!lib0[aut][bk][p][i]){
 
 JSON.parse(localStorage.getItem('lib0'));
 localStorage.setItem('lib0',JSON.stringify(lib0));
+////////////////////////////////
+
+const aut = document.querySelector('.footnote').textContent.replace('(','').replace(')','');
+const bk = document.querySelector('title').textContent;
+var check;
+const laut = localStorage.getItem('aut');
+var aid;
+let lib0;
+null!==laut?(laut===aut?check=1:check=0):check=-1;
+if(check!==-1){
+     lib0 = new Map(JSON.parse(localStorage.getItem('lib0')));
+     
+    if(check===1){ aid=lib0.size-2; }else{aid=lib0.size-1;lib0.set(aid,[aut]);}
+     lib0.set('TC',new Set(JSON.parse(localStorage.getItem('tc'))));
+}else{
+     lib0 = new Map(); aid=lib0.size; lib0.set('TC',new Set());lib0.set(aid,[aut]);
+}
+
+
+lib0.get(aid).push([bk])
+const bid = lib0.get(aid).length - 2;
+lib0.get(aid)[bid+1].push({aid:aid});
+lib0.get(aid)[bid+1][1]['bid'] = bid;
+
+
+const crd = document.querySelector('.PageText');
+const crdc = crd.childNodes;
+
+
+var c =[];
+for (let i = 0; i < crdc.length; i++) {
+   var e = crdc[i].querySelector('.title');   
+  
+    if(null!==e){
+       var t = e.textContent;
+        c.push(t,crdc[i].textContent.replace(t,''))
+        lib0.get('TC').add(t.replace(':',''))
+    }else{
+       c.push(crdc[i].textContent)
+    }
+}
+lib0.get(aid)[bid+1][1]['d'] = c;
+
+document.querySelector('.PageText').remove();
+
+let tt = document.querySelectorAll('.PageText');
+tt.forEach(t=>{const u = t.querySelector('.PageNumber'); if(u){t.data =u.textContent;const d = t.querySelector('.PageHead');if(d){t.removeChild(d)}}});
+
+
+lib0.get(aid)[bid+1][1]['p'] = {};
+const p = lib0.get(aid)[bid+1][1].p;
+for (let i = 0; i < tt.length; i++) {
+    
+    const ee = tt[i].data;
+          p[Object.entries(p).length]={c:ee , a: aid,b: bid,t:'np'}; 
+     const ff = tt[i].childNodes;
+  
+const processedNodes = new Set();
+for (let f = 0; f < ff.length; f++) {
+    if(ff[f].data&&ff[f].data=='&zwnj;'){continue;}
+
+    if(ff[f].nodeName==='HR'){continue;}
+    if (ff[f].className !== 'footnote' && ff[f].nodeName !== 'P' && ff[f].className !== 'title' && !processedNodes.has(ff[f])) {
+        
+        let combinedText = ff[f].data || ff[f].textContent;
+        processedNodes.add(ff[f]);
+
+        let a = ff[f].nextSibling;
+        while (a && (a.className !== 'footnote' && a.nodeName !== 'P' && a.className !== 'title'&&a.nodeName!=='HR')) {
+            combinedText += (a.data || a.textContent || '');
+            processedNodes.add(a);
+            a = a.nextSibling;
+        }
+
+        if (combinedText.length > 0) {
+          p[Object.entries(p).length]={c:combinedText , a: aid,b: bid,t:''}; 
+        }
+    }
+    else if (ff[f].nodeName === 'P' && !processedNodes.has(ff[f])) {
+        let combinedText = ff[f].textContent;
+        processedNodes.add(ff[f]);
+
+        let a = ff[f].nextSibling;
+        while (a && (a.className !== 'footnote' && a.nodeName !== 'P' && a.className !== 'title'&&a.nodeName!=='HR')) {
+            combinedText += (a.data || a.textContent || '');
+            processedNodes.add(a);
+            a = a.nextSibling;
+        }
+
+        if (combinedText.length > 0) {
+          p[Object.entries(p).length]={c:combinedText , a: aid,b: bid,t:'bs'}; 
+        }
+    }
+     else if (ff[f].className === 'title') {
+          p[Object.entries(p).length]={c:ff[f].textContent , a: aid,b: bid,t:'t'}; 
+        }
+
+       else if (ff[f].hasAttribute && ff[f].hasAttribute('data-type')) {
+         p[Object.entries(p).length]={c:ff[f].textContent , a: aid,b: bid,t:'t'}; 
+        }
+
+      else  if (ff[f].className === 'footnote') {
+          const rr =  ff[f].querySelectorAll('p');
+rr.forEach(y=>{
+    let ddd ='';
+    while(y.nextSibling&&y.nextSibling.tagName!=='P'){
+    if(y.nextSibling.nodeName==='P'){return;}
+    const a = y.nextSibling;
+         ddd += (a.data || a.textContent || ''); 
+        a.parentElement.removeChild(a);}  
+            if(ddd.length>0){y.textContent += 'bs'+ddd}
+});
+          p[Object.entries(p).length]={c:ff[f].textContent , a: aid,b: bid,t:'fn'}; 
+        }
+else if(ff[f].textContent>0){
+          p[Object.entries(p).length]={c:ff[f].textContent , a: aid,b: bid,t:'v'}; 
+}
+    }
+}
+localStorage.setItem('tc',JSON.stringify(Array.from(lib0.get('TC'))));
+localStorage.setItem('lib0',JSON.stringify(Array.from(lib0.entries())));
+localStorage.setItem('aut',aut);
