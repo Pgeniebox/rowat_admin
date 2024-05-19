@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="ar" style="direction: rtl;">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Reader</title>
+    <script src="https://cdn.jsdelivr.net/npm/pako@2.1.0/dist/pako.min.js"></script>
+</head>
+<style>
+    body{
+        background-color: rgb(34, 34, 34);
+        
+    }
+    .loader {
+        top: 0;
+        position: fixed;
+        
+      height: 2px;
+      width: 100%;
+      --c:no-repeat linear-gradient(#97ff0e 0 0);
+      background: var(--c),var(--c),#454446;
+      background-size: 60% 100%;
+      animation: l16 3s infinite;
+    }
+    @keyframes l16 {
+      0%   {background-position:-150% 0,-150% 0}
+      66%  {background-position: 250% 0,-150% 0}
+      100% {background-position: 250% 0, 250% 0}
+    }
+
+    
+
+</style>
+<body>
+    <div class="loader"></div> 
+
+    <input type="text" id="searchInput" placeholder="Type a character">
+    <button onclick="searchEntries(document.querySelector('#searchInput').value)">create Lib</button>
+    <button id="2" onclick="compressLib(document.querySelector('#searchInput').value)" style="display: block;">compress Lib</button>
+    <button id="3" onclick="binToMap(document.querySelector('#searchInput').value)" style="display: block;">binTo Map</button>
+    <button id="4" onclick="searchLib(document.querySelector('#searchInput').value)" style="display: block;">search in Map</button>
+    <button id="4" onclick="searchBook(document.querySelector('#searchInput').value)" style="display: block;">search Book</button>
+    <button id="5" onclick="createAutLib(document.querySelector('#searchInput').value)" style="display: block;">createAutLib</button>
+
+    <div id="result"></div>
+    <iframe id="myframe" src="https://shamela.ws/author/1" width="100%" height="400px" ></iframe>
+
+    <script>
+        document.querySelector('.loader').style.display='none';
+
+       let af=0; 
+       // Save a reference to the original postMessage method
+var originalPostMessage = Worker.prototype.postMessage;
+
+// Override the postMessage method of Worker instances
+Worker.prototype.postMessage = function() {
+    // Show loader
+    document.querySelector('.loader').style.display = 'block';
+
+    // Call the original postMessage method with the provided arguments
+    originalPostMessage.apply(this, arguments);
+};
+
+
+const worker = new Worker('worker.js');
+
+worker.onmessage = function(e) {
+   switch(e.data.action){
+case 'blob':
+const a = document.createElement('a');
+    a.href = e.data.url;
+    a.download = e.data.fn;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(e.data.url);
+    break;
+    case 'error':
+        console.log(e.data.er);
+        break;
+        case 'message':
+            console.log(e.data.c);
+            break;
+            case 'searchResult':
+                 const w = performance.now()-af;
+                console.log(e.data.response,w);
+                break;
+   }
+   document.querySelector('.loader').style.display='none';
+
+};
+
+
+function compressLib(e){
+    worker.postMessage({action:'compressLib',path:e})
+}
+function binToMap(e){
+   worker.postMessage({action:'binToMap',path:e});
+}
+
+function searchLib(e){af=performance.now();
+worker.postMessage({action:'searchLib',w:e});
+}
+function searchBook(e){
+worker.postMessage({action:'searchBook',w:e});
+}
+
+
+let Lib;
+
+let lib0 = new Map();
+let libAut = new Map();
+///lib0.set('TC',new Set());
+lib0.set(lib0.size,[]);
+let dd;
+async function createAutLib(i){
+
+    const response = fetch("https://shamela.ws/author/"+`${i}`, {
+  "headers": {
+    "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
+    "accept-language": "fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7",
+    "priority": "u=0, i",
+    "sec-ch-ua": "\"Chromium\";v=\"124\", \"Google Chrome\";v=\"124\", \"Not-A.Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "document",
+    "sec-fetch-site": "none",
+    "sec-fetch-user": "?1",
+    "upgrade-insecure-requests": "1"
+  },
+  "mode": "no-cors",
+});            dd=await response;
+            const data = await response.text();
+            const parser = new DOMParser();
+            const htmlDocument = parser.parseFromString(data, "text/html");
+            console.log(htmlDocument);return;
+           libAut.set(i,[Array.from(htmlDocument.querySelectorAll('.alert')[1].childNodes).filter(i=>i.data).map(i=>i.data)]); 
+            
+}
+
+      async function searchEntries(e) {
+
+    const fileList = await getFileList(e); 
+    for (const fileName of fileList) {
+        try {
+            const response = await fetch(`${fileName}`);
+            const data = await response.text();
+            const parser = new DOMParser();
+            const htmlDocument = parser.parseFromString(data, "text/html");
+            const aut = htmlDocument.querySelector('.footnote').textContent.replace('(','').replace(')','');
+const bk = htmlDocument.querySelector('title').textContent;
+var check;
+var laut = localStorage.getItem('aut')||'';
+var aid;
+undefined===lib0.get(1)[0]?(aid=1,lib0.set(aid,[aut])):aid=0;
+if(aid==0){console.log('0');
+for (let o = 1; o < lib0.size; o++) {
+   if( lib0.get(o)[0].includes(aut)||aut.includes(lib0.get(o)[0])){ aid=o; break;  }else{aid=lib0.size}
+}  console.log('1');
+if(aid===lib0.size){lib0.set(aid,[aut]);}
+console.log('2');
+}
+if(!laut.includes(aut)){    laut = laut +' '+aut;
+localStorage.setItem('aut',laut);                          }
+console.log('3');
+
+
+lib0.get(aid).push([bk]);
+const bid = lib0.get(aid).length-1;
+lib0.get(aid)[bid].push({aid:aid});
+lib0.get(aid)[bid][1]['bid'] = bid;
+console.log('4');
+
+const crd = htmlDocument.querySelector('.PageText');
+const crdc = crd.childNodes;
+
+var c =[];
+for (let i = 0; i < crdc.length; i++) {
+   var e = crdc[i].querySelector('.title');   
+  
+    if(null!==e){
+       var t = e.textContent;
+        c.push(t,crdc[i].textContent.replace(t,''));
+        ///lib0.get('TC').add(t.replace(':',''));console.log('5');
+
+    }else{
+       c.push(crdc[i].textContent)
+    }
+}
+lib0.get(aid)[bid][1]['d'] = c;
+
+htmlDocument.querySelector('.PageText').remove();
+
+let tt = htmlDocument.querySelectorAll('.PageText');
+tt.forEach(t=>{const u = t.querySelector('.PageNumber'); if(u){t.data =u.textContent;const d = t.querySelector('.PageHead');if(d){t.removeChild(d)}}});
+
+lib0.get(aid)[bid][1]['p'] = {};
+const p = lib0.get(aid)[bid][1].p;
+for (let i = 0; i < tt.length; i++) {
+    
+    const ee = tt[i].data;
+    if(ee&&undefined!==ee){
+          p[Object.entries(p).length] = {c: ee , a: aid,b: bid,t:'np'}; }
+     const ff = tt[i].childNodes;
+  
+const processedNodes = new Set();
+for (let f = 0; f < ff.length; f++) {
+    if(ff[f].data&&ff[f].data=='&zwnj;'){continue;}
+
+    if(ff[f].nodeName==='HR'){continue;}
+    if (ff[f].className !== 'footnote' && ff[f].nodeName !== 'P' && ff[f].className !== 'title' && !processedNodes.has(ff[f])) {
+        
+        let combinedText = ff[f].data || ff[f].textContent;
+        processedNodes.add(ff[f]);
+
+        let a = ff[f].nextSibling;
+        while (a && (a.className !== 'footnote' && a.nodeName !== 'P' && a.className !== 'title'&&a.nodeName!=='HR')) {
+            combinedText += (a.data || a.textContent || '');
+            processedNodes.add(a);
+            a = a.nextSibling;
+        }
+
+        if (combinedText.length > 0) {
+          p[Object.entries(p).length]={c: combinedText , a: aid,b: bid,t:''}; 
+        }
+    }
+    else if (ff[f].nodeName === 'P' && !processedNodes.has(ff[f])) {
+        let combinedText = ff[f].textContent;
+        processedNodes.add(ff[f]);
+
+        let a = ff[f].nextSibling;
+        while (a && (a.className !== 'footnote' && a.nodeName !== 'P' && a.className !== 'title'&&a.nodeName!=='HR')) {
+            combinedText += (a.data || a.textContent || '');
+            processedNodes.add(a);
+            a = a.nextSibling;
+        }
+
+        if (combinedText.length > 0) {
+          p[Object.entries(p).length]={ c: combinedText , a: aid,b: bid,t:'bs'}; 
+        }
+    }
+     else if (ff[f].className === 'title') {
+          p[Object.entries(p).length]={c: ff[f].textContent , a: aid,b: bid,t:'t'}; 
+        }
+
+       else if (ff[f].hasAttribute && ff[f].hasAttribute('data-type')) {
+         p[Object.entries(p).length]={c: ff[f].textContent , a: aid,b: bid,t:'t'}; 
+        }
+
+      else  if (ff[f].className === 'footnote') {
+          const rr =  ff[f].querySelectorAll('p');
+rr.forEach(y=>{
+    let ddd ='';
+    while(y.nextSibling&&y.nextSibling.tagName!=='P'){
+    if(y.nextSibling.nodeName==='P'){return;}
+    const a = y.nextSibling;
+         ddd += (a.data || a.textContent || ''); 
+        a.parentElement.removeChild(a);}  
+            if(ddd.length>0){y.textContent += 'bs'+ddd}
+});
+          p[Object.entries(p).length]={c:ff[f].textContent , a: aid,b: bid,t:'fn'}; 
+        }
+else if(ff[f].textContent>0){
+          p[Object.entries(p).length]={c:ff[f].textContent , a: aid,b: bid,t:'v'}; 
+}
+    }
+}
+
+        } catch (error) {
+          
+           console.log(`Error reading file ${fileName}:`+error.message);
+            return;
+        }
+    }
+console.log('creation finished');
+ 
+worker.postMessage({action:'mapStr',c:JSON.stringify( Array.from(lib0.entries()))});
+}
+
+async function getFileList(directory) {
+            
+            let folderlist = [];
+let fileList = [];
+            let dd;
+            
+          async function next(e){        
+            const response = await fetch(e);
+            const data = await response.text();
+            const parser = new DOMParser();
+            const htmlDocument = parser.parseFromString(data, "text/html");
+            ///ii = parser.parseFromString(data, "text/html");
+            htmlDocument.querySelector('a').remove();
+            
+            const links = htmlDocument.querySelectorAll("a");
+           return links;
+           
+                                   }
+  async function d(t){
+         dd =  await next(t);
+         dd.forEach(link => {
+                let fileName = link.getAttribute("href");
+               if(!fileName.includes('step1')){ if(fileName.includes('.htm')){   fileList.push(fileName); }else{  folderlist.push(fileName);  }}
+            });
+        }
+       await d(directory);
+      
+
+
+            if(folderlist.length>0){  
+  folderlist.forEach(async f=>{const a = f;  await d(a);});
+        }
+            return fileList;
+        }
+
+        function binToM(e){
+
+(async () => {
+try {
+    console.log('fetching');
+
+    const response = await fetch(e);
+    if (!response.ok) {
+        throw new Error('Network response was not ok');
+    }
+    console.log('wait');
+    // Read the response as an ArrayBuffer
+    const arrayBuffer = await response.arrayBuffer();
+    console.log('1');
+
+    // Convert the ArrayBuffer to a Uint8Array
+    const compressedUint8Array = new Uint8Array(arrayBuffer);
+    console.log('2');
+
+    // Decompress the binary data using Pako
+    const decompressedUint8Array = pako.inflate(compressedUint8Array);
+    console.log('3');
+
+    // Convert the decompressed Uint8Array back to a string
+    const originalString = uint8ArrayToString(decompressedUint8Array);
+    console.log('4');
+
+    // Log the original string to console or use it as needed
+    lib0 = new Map(JSON.parse(originalString));
+    console.log('5');
+
+    
+} catch (error) {
+    
+}
+})();
+}
+
+function uint8ArrayToString(arr) {
+    // Use TextDecoder to convert the Uint8Array to a UTF-8 string
+    const decoder = new TextDecoder('utf-8');
+    return decoder.decode(arr);
+}
+    </script>
+</body>
+</html>
