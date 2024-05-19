@@ -8,9 +8,11 @@
 </head>
 <body>
     <input type="text" id="searchInput" placeholder="Type a character">
-    <button onclick="searchEntries()">Search</button>
+    <button onclick="searchEntries()">create Lib</button>
     <div id="result"></div>
-    <button id="downloadButton" onclick="downloadLib()" style="display: block;">Download Result</button>
+    <button id="2" onclick="compressLib(document.querySelector('#searchInput').value)" style="display: block;">compress Lib</button>
+    <button id="3" onclick="binToMap(document.querySelector('#searchInput').value)" style="display: block;">binTo Map</button>
+    <button id="4" onclick="searchLib(document.querySelector('#searchInput').value)" style="display: block;">search in Map</button>
 
     <script>
 
@@ -24,8 +26,8 @@ lib0.set(lib0.size,[]);
 
       async function searchEntries() {
 
-    const fileList = await getFileList('/a/'); 
-  
+    const fileList = await getFileList(document.querySelector('#searchInput').value); 
+    console.log('fileList obtained');
     for (const fileName of fileList) {
         try {
             const response = await fetch(`${fileName}`);
@@ -81,7 +83,8 @@ const p = lib0.get(aid)[bid][1].p;
 for (let i = 0; i < tt.length; i++) {
     
     const ee = tt[i].data;
-          p[Object.entries(p).length]={c:ee , a: aid,b: bid,t:'np'}; 
+    if(ee&&undefined!==ee){
+          p[Object.entries(p).length] = {c: ee , a: aid,b: bid,t:'np'}; }
      const ff = tt[i].childNodes;
   
 const processedNodes = new Set();
@@ -102,7 +105,7 @@ for (let f = 0; f < ff.length; f++) {
         }
 
         if (combinedText.length > 0) {
-          p[Object.entries(p).length]={c:combinedText , a: aid,b: bid,t:''}; 
+          p[Object.entries(p).length]={c: combinedText , a: aid,b: bid,t:''}; 
         }
     }
     else if (ff[f].nodeName === 'P' && !processedNodes.has(ff[f])) {
@@ -117,15 +120,15 @@ for (let f = 0; f < ff.length; f++) {
         }
 
         if (combinedText.length > 0) {
-          p[Object.entries(p).length]={c:combinedText , a: aid,b: bid,t:'bs'}; 
+          p[Object.entries(p).length]={ c: combinedText , a: aid,b: bid,t:'bs'}; 
         }
     }
      else if (ff[f].className === 'title') {
-          p[Object.entries(p).length]={c:ff[f].textContent , a: aid,b: bid,t:'t'}; 
+          p[Object.entries(p).length]={c: ff[f].textContent , a: aid,b: bid,t:'t'}; 
         }
 
        else if (ff[f].hasAttribute && ff[f].hasAttribute('data-type')) {
-         p[Object.entries(p).length]={c:ff[f].textContent , a: aid,b: bid,t:'t'}; 
+         p[Object.entries(p).length]={c: ff[f].textContent , a: aid,b: bid,t:'t'}; 
         }
 
       else  if (ff[f].className === 'footnote') {
@@ -155,7 +158,7 @@ else if(ff[f].textContent>0){
     }
 console.log('ok');
  Lib = JSON.stringify( Array.from(lib0.entries()));
-
+ localStorage.setItem( 'TC',JSON.stringify( Array.from(lib0.get('TC').entries())));
 }
 
 
@@ -172,6 +175,7 @@ let fileList = [];
             const htmlDocument = parser.parseFromString(data, "text/html");
             ///ii = parser.parseFromString(data, "text/html");
             htmlDocument.querySelector('a').remove();
+            
             const links = htmlDocument.querySelectorAll("a");
            return links;
            
@@ -180,7 +184,7 @@ let fileList = [];
          dd =  await next(t);
          dd.forEach(link => {
                 let fileName = link.getAttribute("href");
-                if(fileName.includes('.htm')){   fileList.push(fileName); }else{  folderlist.push(fileName);  }
+               if(!fileName.includes('step1')){ if(fileName.includes('.htm')){   fileList.push(fileName); }else{  folderlist.push(fileName);  }}
             });
         }
        await d(directory);
@@ -195,36 +199,27 @@ let fileList = [];
 
  
 
-        function compressLib(){
+function compressLib(e){
     
 
 (async () => {
-    try {
-        const response = await fetch('lib0.json');
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        
-const inputString = await response.text();
+ 
 
 // Convert the input string to a Uint8Array
-const inputBinary = stringToUint8Array(inputString);
+const inputBinary = stringToUint8Array(Lib);
 
 // Compress the binary data using pako with maximum compression level
 const compressedUint8Array = pako.deflate(inputBinary, { level: 9 });
-        downloadBlob(compressedUint8Array, 'compressedFile.bin', 'application/octet-stream');
+        downloadBlob(compressedUint8Array, e, 'application/octet-stream');
 
-    } catch (error) {
-        console.error('There was a problem with the fetch operation:', error);
-    }
 })();
-
 
 }
 
 function uint8ArrayToString(arr) {
-    const utf8String = new TextDecoder('utf-8').decode(arr);
-    return decodeURIComponent(escape(utf8String));
+    // Use TextDecoder to convert the Uint8Array to a UTF-8 string
+    const decoder = new TextDecoder('utf-8');
+    return decoder.decode(arr);
 }
 
 function downloadBlob(data, fileName, mimeType) {
@@ -257,18 +252,50 @@ function binToString(e) {
           library = originalString;
 
         };
-function searchLib(){
+        function searchLib(e){
         let uu = [];
-for (let i = 1; i < library.size; i++) {
-    for (let a = 1; a < library.get(i).length; a++) {
-        for (let d = 0; d < Object.keys(library.get(i)[a][1].p).length; d++) {
-               const oo = Object.values(library.get(i)[a][1].p)[d].c;
-                  if( oo&&undefined!==oo&&null!==oo&&oo.includes('محمد') ){uu.push(Object.values(library.get(i)[a][1].p)[d].c)}
-                          ///console.log(Object.values(library.get(i)[a][1].p)[d].c);break;
-                            }
+for (let i = 1; i < lib0.size; i++) {
+    const f = lib0.get(i);
+    for (let a = 1; a < f.length; a++) {
+        const p = lib0.get(i)[a][1].p;
+        for(const d in p){
+            const c = p[d]['c'];
+       if(c&&c.includes(e)){
+            uu.push(c); }   }
+        }
     }
-console.log('ok')
-}}
+console.log('ok');return uu;
+}
+
+function binToMap(e){
+
+    (async () => {
+    try {
+        const response = await fetch(e);
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        
+        // Read the response as an ArrayBuffer
+        const arrayBuffer = await response.arrayBuffer();
+        
+        // Convert the ArrayBuffer to a Uint8Array
+        const compressedUint8Array = new Uint8Array(arrayBuffer);
+        
+        // Decompress the binary data using Pako
+        const decompressedUint8Array = pako.inflate(compressedUint8Array);
+        
+        // Convert the decompressed Uint8Array back to a string
+        const originalString = uint8ArrayToString(decompressedUint8Array);
+        
+        // Log the original string to console or use it as needed
+        lib0 = new Map(JSON.parse(originalString));
+        alert('map created!')
+    } catch (error) {
+        alert('There was a problem with the fetch operation:', error);
+    }
+})();
+}
     </script>
 </body>
 </html>
