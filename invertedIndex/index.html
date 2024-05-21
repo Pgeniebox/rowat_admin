@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ar" style="direction: rtl;">
 <head>
-https://backend.ketabonline.com/api/v2/authors?is_active=1&is_deleted=0&exclude_details=0&page=1&limit=30000&sort_field=_score&sort_direction=DESC    <meta charset="UTF-8">
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>File Reader</title>
     <script src="https://cdn.jsdelivr.net/npm/pako@2.1.0/dist/pako.min.js"></script>
@@ -28,7 +28,7 @@ https://backend.ketabonline.com/api/v2/authors?is_active=1&is_deleted=0&exclude_
       100% {background-position: 250% 0, 250% 0}
     }
 
-    
+
 
 </style>
 <body>
@@ -41,14 +41,41 @@ https://backend.ketabonline.com/api/v2/authors?is_active=1&is_deleted=0&exclude_
     <button id="4" onclick="searchLib(document.querySelector('#searchInput').value)" style="display: block;">search in Map</button>
     <button id="4" onclick="searchBook(document.querySelector('#searchInput').value)" style="display: block;">search Book</button>
     <button id="5" onclick="createAutLib(document.querySelector('#searchInput').value)" style="display: block;">createAutLib</button>
+    <button id="5" onclick="sendStr(document.querySelector('#searchInput').value)" style="display: block;">send String</button>
 
     <div id="result"></div>
-    <iframe id="myframe" src="https://shamela.ws/author/1" width="100%" height="400px" ></iframe>
+   <script type="module">        import { Fireworks } from 'https://esm.run/fireworks-js';
+</script>
+  
+    <script >
+        
 
-    <script>
+
         document.querySelector('.loader').style.display='none';
 
        let af=0; 
+  
+
+       const originalFetch = window.fetch;
+
+// Override the global fetch function
+window.fetch = function(...args) {
+    document.querySelector('.loader').style.display='';
+
+    // Add your custom logic here
+    console.log('Fetch called with arguments:', args);
+
+    // Call the original fetch function
+    return originalFetch(...args).then(response => {
+        // You can manipulate the response here if needed
+        return response;
+    }).catch(error => {
+        // Handle errors if needed
+        console.error('Fetch error:', error);
+        throw error; // Re-throw the error after logging it
+    }).finally(()=>{        document.querySelector('.loader').style.display='none';
+});
+};
        // Save a reference to the original postMessage method
 var originalPostMessage = Worker.prototype.postMessage;
 
@@ -90,7 +117,18 @@ const a = document.createElement('a');
 
 };
 
+async function sendStr(e){
+    const response = await fetch(e);
+    if (!response.ok) {
+        throw new Error('Network response was not ok');
+    }
+    console.log('wait');
+    const arrayBuffer = await response.text();
+    console.log('1');
+    
+    worker.postMessage({action:'mapStr',c:arrayBuffer});
 
+}
 function compressLib(e){
     worker.postMessage({action:'compressLib',path:e})
 }
@@ -105,38 +143,14 @@ function searchBook(e){
 worker.postMessage({action:'searchBook',w:e});
 }
 
-
 let Lib;
 
 let lib0 = new Map();
 let libAut = new Map();
 ///lib0.set('TC',new Set());
 lib0.set(lib0.size,[]);
-let dd;
-async function createAutLib(i){
 
-    const response = fetch("https://shamela.ws/author/"+`${i}`, {
-  "headers": {
-    "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
-    "accept-language": "fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7",
-    "priority": "u=0, i",
-    "sec-ch-ua": "\"Chromium\";v=\"124\", \"Google Chrome\";v=\"124\", \"Not-A.Brand\";v=\"99\"",
-    "sec-ch-ua-mobile": "?0",
-    "sec-ch-ua-platform": "\"Windows\"",
-    "sec-fetch-dest": "document",
-    "sec-fetch-site": "none",
-    "sec-fetch-user": "?1",
-    "upgrade-insecure-requests": "1"
-  },
-  "mode": "no-cors",
-});            dd=await response;
-            const data = await response.text();
-            const parser = new DOMParser();
-            const htmlDocument = parser.parseFromString(data, "text/html");
-            console.log(htmlDocument);return;
-           libAut.set(i,[Array.from(htmlDocument.querySelectorAll('.alert')[1].childNodes).filter(i=>i.data).map(i=>i.data)]); 
-            
-}
+
 
       async function searchEntries(e) {
 
@@ -340,12 +354,12 @@ try {
     console.log('4');
 
     // Log the original string to console or use it as needed
-    lib0 = new Map(JSON.parse(originalString));
+    lib0 = await JSON.parse(originalString);
     console.log('5');
 
     
 } catch (error) {
-    
+    console.log(error)
 }
 })();
 }
@@ -355,6 +369,33 @@ function uint8ArrayToString(arr) {
     const decoder = new TextDecoder('utf-8');
     return decoder.decode(arr);
 }
+
+async function modFile(e){
+    const fileList = await getFileList(e); 
+    for (const fileName of fileList) {
+        try {
+            const response = await fetch(`${fileName}`);
+            const data = await response.text();
+            const parser = new DOMParser();
+            const htmlDocument = parser.parseFromString(data, "text/html");
+            const aut = htmlDocument.querySelector('.footnote').textContent.replace('(','').replace(')','');
+const bk = htmlDocument.querySelector('title').textContent;}catch(e){console.log(e,fileName);}
+const blob = new Blob([data], { type: 'text/html' });
+
+// Create a temporary anchor element
+const anchor = document.createElement('a');
+anchor.href = URL.createObjectURL(blob);
+anchor.download = aut+'-'+bk-'.htm'; // Specify the filename you want
+
+// Programmatically click the anchor to trigger the download
+anchor.click();
+
+// Clean up by revoking the object URL
+URL.revokeObjectURL(anchor.href);
+}
+
+}
+
     </script>
 </body>
 </html>
