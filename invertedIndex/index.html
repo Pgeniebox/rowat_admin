@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>File Reader</title>
     <script src="https://cdn.jsdelivr.net/npm/pako@2.1.0/dist/pako.min.js"></script>
+    
+    <script src="https://unpkg.com/bn.js@5.2.1/lib/bn.js"></script>
+
 </head>
 <style>
     body{
@@ -354,16 +357,16 @@ try {
     console.log('4');
 
     // Log the original string to console or use it as needed
-    lib0 = await JSON.parse(originalString);
+    ///lib0 = await JSON.parse(originalString);
     console.log('5');
-
+   uu = originalString;
     
 } catch (error) {
     console.log(error)
 }
 })();
 }
-
+let uu;
 function uint8ArrayToString(arr) {
     // Use TextDecoder to convert the Uint8Array to a UTF-8 string
     const decoder = new TextDecoder('utf-8');
@@ -395,7 +398,180 @@ URL.revokeObjectURL(anchor.href);
 }
 
 }
+let map =  new Map(JSON.parse(localStorage.getItem('map')))|| new Map();
+let map2 = new Map(JSON.parse(localStorage.getItem('map2')))|| new Map();
+let map3 =  new Map(JSON.parse(localStorage.getItem('map3')))|| new Map();
+let map4 = new Map(JSON.parse(localStorage.getItem('map4')))|| new Map();
+function skipNumbersWithOne(currentNumber) {
+    var i = currentNumber;
+    var s = String(i);
+    while (s.includes('0')) {
+        i++;
+        s = String(i);
+    }
+    return i;
+}
+let ff=false;
+function stringToUint8Array(str) {
+    // Pad the string with spaces until its length is divisible by 7
+    while (str.length % 7 !== 0) {
+        str += ' ';
+    }
+    let mm;
+    let set = new Set(str);
+    let i = 1;
+    if(!ff){           for (const f of set) {
+        map.set(f, String(i));
+        map2.set(String(i), f);
+        i = skipNumbersWithOne(++i);
+        mm=map;
+    }        }else{
+        for (const f of set) {
+        map3.set(f, String(i));
+        map4.set(String(i), f);
+        i = skipNumbersWithOne(++i);
+    }
+   /// console.log(str);return;
+    mm = map3;
+    }
+   
+    
+    
+    const arr = [];
+    let o = 0;
+    for (let i = 0; i < str.length / 7; i++) {
+        const g = Number(`${mm.get(str[o])}0${mm.get(str[o + 1])}0${mm.get(str[o + 2])}0${mm.get(str[o + 3])}0${mm.get(str[o + 4])}0${mm.get(str[o + 5])}0${mm.get(str[o + 6])}`);
+        arr[i] = g;
+        o += 7; 
+    }
+    if(ff){return arr;}
+  ff = true;
+    // Split the array into smaller arrays with a maximum length of 10000 elements
+    const result = [];
+    const maxLength = 10000;
+    for (let i = 0; i < arr.length; i += maxLength) {
+        result.push(arr.slice(i, i + maxLength));
+    }
+    const fresult = [];
+    for (let f = 0; f < result.length; f ++) {
+      fresult.push(numbersToBigInt(result[f]));
+    }
+    localStorage.setItem('frs',fresult.length);
+    console.log(fresult);
+   const ffr = numbersToBigInt(fresult);
+    ///console.log(fresult);
+    ///return console.log(numbersToBigInt( new BN( ffr).words));
+     ///ffrs = fresult.map(e=>{return String(e)});
+    ///console.log(ffr);
+    return ffr.toString();
+}
 
+
+function numbersToBigInt(numbers) {
+    let result = 0n; // Initialize BigInt
+    const bitLength = 64; // Each number occupies 64 bits
+
+    for (let i = 0; i < numbers.length; i++) {
+        let value = BigInt(numbers[i]);
+        result += value << BigInt(i * bitLength); // Shift and accumulate
+    }
+
+    return result;
+}
+
+function bigIntToNumbers(bigIntValue, count) {
+    const numbers = [];
+    const bitLength = 2048; // The bit length used in the original combination
+
+    for (let i = 0; i < count; i++) {
+        let mask = (1n << BigInt(bitLength)) - 1n; // Create a mask for the current segment
+        let value = (bigIntValue >> BigInt(i * bitLength)) & mask; // Extract the current segment
+        numbers.push(value); // Store the segment as BigInt
+    }
+
+    return numbers;
+}
+
+function stringToUint8(str) {
+    const utf8 = unescape(encodeURIComponent(str));
+    const arr = new Uint8Array(utf8.length);
+    for (let i = 0; i < utf8.length; i++) {
+        arr[i] = utf8.charCodeAt(i);
+    }
+    return arr;
+}
+
+function compressLib(e,b){
+    ///document.querySelector('.loader').style.display='';
+
+
+    (async () => {
+        const inputBinary = stringToUint8Array(e);
+        document.querySelector('.loader').style.display='none';
+         ///const dd = String(inputBinary);
+         ///console.log(dd);
+         
+        const compressedUint8Array = pako.deflate(removeNonNumericCharacters(inputBinary), { level: 9 });
+        console.log('5');
+    
+    const blob = new Blob([compressedUint8Array], { type: 'application/octet-stream' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = b;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    
+    localStorage.setItem('map',JSON.stringify(Array.from(map)));
+    localStorage.setItem('map2',JSON.stringify(Array.from(map2)));
+    localStorage.setItem('map3',JSON.stringify(Array.from(map3)));
+    localStorage.setItem('map4',JSON.stringify(Array.from(map4)));
+        console.log('finish');
+    })();
+    
+    }
+function btostr(e){
+    (async () => {
+try {
+    console.log('fetching');
+
+    const response = await fetch(e);
+    if (!response.ok) {
+        throw new Error('Network response was not ok');
+    }
+    console.log('wait');
+    // Read the response as an ArrayBuffer
+    const compressedUint8Array = await response.arrayBuffer(); // Convert the response to an ArrayBuffer
+    const decompressedUint8Array = pako.inflate(compressedUint8Array); // Decompress the data
+    let decompressedString = '';
+    for (let i = 0; i < decompressedUint8Array.length; i++) {
+        decompressedString += String.fromCharCode(decompressedUint8Array[i]);
+    }
+    ///console.log(JSON.parse('['+decompressedString+']'));return;
+    // You now have the decompressed Uint8Array, you can convert it to Uint32Array if needed
+   ///const big1 = JSON.parse('['+decompressedString+']');
+let gg;
+gg = removeNonNumericCharacters(decompressedString);
+
+
+
+
+   ///vd = new BN(gg);
+    ///let vv = bigIntToNumbers(gg,Number(localStorage.getItem('frs')));
+    console.log(bigIntToNumbers(BigInt(gg),Number(localStorage.getItem('frs'))));
+} catch (error) {
+    console.log(error)
+}
+})();
+
+}
+function removeNonNumericCharacters(str) {
+    // Use a regular expression to match any non-numeric characters and replace them with an empty string
+    return str.replace(/\D/g, '');
+}
+let vd;
     </script>
 </body>
 </html>
