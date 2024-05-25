@@ -587,6 +587,51 @@ while (i > 0) {
 
 console.log(n);
         }
+        var n = 0n;
+n += 1000000000000000000000000000000000000000000000000000n; 
+let g=n;
+let o = 0;
+let h;
+var p=0;
+let k=[];
+let fg=false;
+for (;n/2n>1000n;n/=2n){
+     if(n%2n!==0n){fg=true; h=[o,n,BigInt(p * Math.pow(100, p.toString().length-2)),p]; p+=1;}    o++;
+
+   if(fg){ p/=2;k.push(p)} 
+}
+let i =h[0]; let u=h[1];let b=h[2]+h[2]/10000000000000000n;
+for (; i > 0; i--) {
+    u *= 2n; 
+        b *= 2n;
+}
+b/=100000000000000000000000000000000n;console.log(g-u,b)
+        let n=100000000000000000000000n
+let g=n;
+let p=0n
+let o=0;
+let ok =false;
+let u=[];
+let f=0;
+var r=0n
+for (;n/2n>1n;n/=2n){o++;   p*=5n; 
+                 if(ok){   ok=false; p+= r;u.push([n,p,o,r]);   }    
+     if(n%2n!==0n){ ok=true;
+         if(p.toString()[0]==='1'){console.log('1');   r =BigInt(5* Math.pow(10, p.toString().length));                   }else{
+console.log('0');
+              r =BigInt(5* Math.pow(10, p.toString().length));
+         }
+         
+            ok=true;  
+                 } 
+                 
+}
+n=u[u.length-1][0];p=u[u.length-1][1];o=u[u.length-1][2];
+    
+for (; o > 1; o--) {
+   n*=2n;p*=2n
+}
+console.log(p,g-n)
     </script>
 </body>
 </html>
