@@ -7,7 +7,41 @@
     <script src="https://cdn.jsdelivr.net/npm/pako@2.1.0/dist/pako.min.js"></script>
     
     <script src="https://unpkg.com/bn.js@5.2.1/lib/bn.js"></script>
+n*=n*n;
+let g=n;
+let o = 0;
+let k=[];
 
+for (;n/5n>1000000n;n/=5n){o++;
+     if(n%5n!==0n){ k=[o,n]}    
+
+  
+}
+let i =k[0]; let u= k[1];
+for (; i > 1; i--) {
+    u *= 5n; 
+}
+
+let ff= u/k[2];let b=u;let fg=0; k.push(k[2]);
+while(ff.toString().length>20){
+    if((b+ff)===g){break;}
+    fg++;
+     b +=ff/2n;
+    ff=u/(u/(g-b));
+}
+if((b+ff)===g){   k.push([fg,(b+ff)===g])     }else{k.push([fg,ff,(b+ff)===g])}
+
+////////////////////////////
+let ff= u/k[2];let b=u;let fg=0; k.push(k[2]);
+for (let s =0;s<50000n;s++ ){
+    if((b+ff)===g){break;}
+   if (ff.toString().length<20){break;}
+    fg++;
+     b +=ff/2n;
+    ff=u/(u/(g-b));
+}
+
+if((b+ff)===g){   k.push([fg,(b+ff)===g])     }else{k.push([fg,ff,(b+ff)===g])}
 </head>
 <style>
     body{
